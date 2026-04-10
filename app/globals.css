@@ -1,0 +1,340 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Barlow+Condensed:wght@400;500;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:      #F4F2EC;
+  --ink:     #0A0A08;
+  --accent:  #E8280A;
+  --surface: #FFFFFF;
+  --font:    'IBM Plex Mono', monospace;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 12px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Shell ───────────────────────────────────────────── */
+
+.app-shell {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--ink);
+  overflow: hidden;
+}
+
+/* ── Topbar ──────────────────────────────────────────── */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--ink);
+  flex-shrink: 0;
+}
+
+/* ── Label utility ───────────────────────────────────── */
+
+.label {
+  font-family: var(--font);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ── Era toggle ──────────────────────────────────────── */
+
+.era-toggle {
+  display: flex;
+}
+
+.era-btn {
+  font-family: var(--font);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 4px 12px;
+  border: 1px solid rgba(10, 10, 8, 0.35);
+  background: none;
+  cursor: pointer;
+  color: var(--ink);
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+}
+
+.era-btn:first-child {
+  border-right: none;
+}
+
+.era-btn--active {
+  background: var(--ink);
+  color: var(--surface);
+  border-color: var(--ink);
+}
+
+.era-btn:hover:not(.era-btn--active) {
+  background: rgba(10, 10, 8, 0.06);
+}
+
+/* ── Main layout ─────────────────────────────────────── */
+
+.main-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Player area (left column) ───────────────────────── */
+
+.player-area {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  border-right: 1px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  overflow: hidden;
+}
+
+/* In portrait mode the surround becomes off-white so the black frame reads */
+.player-area--portrait {
+  background: var(--bg);
+}
+
+.player-panel {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Portrait: constrain to 9:16, let the area provide the surround */
+.player-panel--portrait {
+  width: auto;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+}
+
+/* ── Sidebar (right) ─────────────────────────────────── */
+
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-section-header {
+  color: rgba(10, 10, 8, 0.45);
+}
+
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid var(--ink);
+  flex-shrink: 0;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px;
+  border-top: 1px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Script textarea ─────────────────────────────────── */
+
+.script-input {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 11px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--ink);
+  padding: 8px 10px;
+  resize: vertical;
+  min-height: 140px;
+  outline: none;
+  line-height: 1.5;
+}
+
+.script-input:focus {
+  border-color: var(--accent);
+}
+
+.script-input::placeholder {
+  color: rgba(10, 10, 8, 0.3);
+}
+
+/* ── Sliders ─────────────────────────────────────────── */
+
+.slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accent-value {
+  color: var(--accent);
+}
+
+.slider {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 2px;
+  background: var(--ink);
+  outline: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(10, 10, 8, 0.4);
+}
+
+/* ── Buttons ─────────────────────────────────────────── */
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 11px 16px;
+  background: var(--ink);
+  color: var(--surface);
+  font-family: var(--font);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  border: 1px solid var(--ink);
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn--outline {
+  background: none;
+  color: var(--ink);
+}
+
+.btn--outline:hover {
+  background: var(--accent);
+  color: var(--surface);
+  border-color: var(--accent);
+}
+
+.btn--active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--surface);
+}
+
+/* ── Error ───────────────────────────────────────────── */
+
+.error-msg {
+  color: var(--accent);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Card count / topbar right ───────────────────────── */
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ── Font picker ─────────────────────────────────────── */
+
+.font-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.font-btn {
+  flex: 1;
+  padding: 5px 6px;
+  border: 1px solid rgba(10, 10, 8, 0.35);
+  border-right: none;
+  background: none;
+  cursor: pointer;
+  font-size: 10px;
+  color: var(--ink);
+  white-space: nowrap;
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+  text-align: center;
+}
+
+.font-btn:last-child {
+  border-right: 1px solid rgba(10, 10, 8, 0.35);
+}
+
+.font-btn--active {
+  background: var(--ink);
+  color: var(--surface);
+  border-color: var(--ink);
+}
+
+.font-btn:hover:not(.font-btn--active) {
+  background: rgba(10, 10, 8, 0.06);
+}
