@@ -1,3 +1,4 @@
+import JSZip from 'jszip';
 import { CardSpec } from './types';
 import { cardFontSize } from './sizing';
 
@@ -217,4 +218,43 @@ export async function exportFrame(
       resolve();
     }, 'image/png');
   });
+}
+
+export async function exportAllFrames(
+  cards: CardSpec[],
+  ratio: '16:9' | '9:16',
+  font: string,
+  caseMode: 'upper' | 'lower' | 'as-written',
+  trackingEm: number,
+  onProgress: (pct: number) => void
+): Promise<void> {
+  await document.fonts.ready;
+
+  const W = ratio === '9:16' ? 1080 : 1920;
+  const H = ratio === '9:16' ? 1920 : 1080;
+
+  const canvas = document.createElement('canvas');
+  canvas.width  = W;
+  canvas.height = H;
+
+  const zip = new JSZip();
+
+  for (let i = 0; i < cards.length; i++) {
+    drawCardToCanvas(canvas, cards[i], font, caseMode, trackingEm);
+    const blob = await new Promise<Blob>((resolve) => {
+      canvas.toBlob((b) => resolve(b!), 'image/png');
+    });
+    zip.file(`godard-${String(i + 1).padStart(3, '0')}.png`, blob);
+    onProgress(Math.round(((i + 1) / cards.length) * 100));
+  }
+
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(zipBlob);
+  const a   = document.createElement('a');
+  a.href     = url;
+  a.download = 'godard-frames.zip';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }

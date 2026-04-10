@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react';
 import Player from '@/components/Player';
 import { CardSpec } from '@/lib/types';
-import { exportFrame, exportVideo } from '@/lib/export';
+import { exportFrame, exportVideo, exportAllFrames } from '@/lib/export';
 
 const FONT_OPTIONS = [
   { label: 'Impact',  value: 'Impact, "Arial Black", "Helvetica Neue", Arial, sans-serif' },
@@ -29,6 +29,7 @@ export default function Page() {
   const [error, setError]     = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
   const [videoProgress, setVideoProgress] = useState<number | null>(null);
+  const [zipProgress, setZipProgress]     = useState<number | null>(null);
 
   const trackingEm = (tracking / 100) * 0.25;
 
@@ -65,6 +66,13 @@ export default function Page() {
     setExporting(true);
     await exportFrame(cards[cardIndex], cardIndex, ratio, font, caseMode, trackingEm);
     setExporting(false);
+  };
+
+  const handleExportZip = async () => {
+    if (cards.length === 0 || zipProgress !== null) return;
+    setZipProgress(0);
+    await exportAllFrames(cards, ratio, font, caseMode, trackingEm, setZipProgress);
+    setZipProgress(null);
   };
 
   const handleExportVideo = async () => {
@@ -215,11 +223,15 @@ export default function Page() {
               {playing ? 'Stop' : 'Play'}
             </button>
 
-            <button className="btn btn--outline" onClick={handleExport} disabled={cards.length === 0 || exporting || videoProgress !== null}>
+            <button className="btn btn--outline" onClick={handleExport} disabled={cards.length === 0 || exporting || videoProgress !== null || zipProgress !== null}>
               {exporting ? 'Exporting…' : 'Export Frame'}
             </button>
 
-            <button className="btn btn--outline" onClick={handleExportVideo} disabled={cards.length === 0 || videoProgress !== null || exporting}>
+            <button className="btn btn--outline" onClick={handleExportZip} disabled={cards.length === 0 || zipProgress !== null || videoProgress !== null || exporting}>
+              {zipProgress !== null ? `Zipping… ${zipProgress}%` : 'Export Stills'}
+            </button>
+
+            <button className="btn btn--outline" onClick={handleExportVideo} disabled={cards.length === 0 || videoProgress !== null || exporting || zipProgress !== null}>
               {videoProgress !== null
                 ? `Recording… ${videoProgress}%`
                 : 'Export Video'}
