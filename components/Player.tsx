@@ -19,17 +19,19 @@ interface Props {
   font: string;
   caseMode: 'upper' | 'lower' | 'as-written';
   trackingEm: number;
+  jitter: number; // 0–100
   index: number;
   onIndexChange: (i: number) => void;
 }
 
 export default function Player({
   cards, pacing, playing, ratio,
-  font, caseMode, trackingEm,
+  font, caseMode, trackingEm, jitter,
   index, onIndexChange,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const [shake, setShake] = useState({ x: 0, y: 0, r: 0 });
 
   const nativeW = ratio === '9:16' ? 1080 : NATIVE_W;
   const nativeH = ratio === '9:16' ? 1920 : NATIVE_H;
@@ -44,6 +46,18 @@ export default function Player({
     obs.observe(el);
     return () => obs.disconnect();
   }, [nativeW, nativeH]);
+
+  // New random shake offset on every card cut
+  useEffect(() => {
+    if (jitter === 0) { setShake({ x: 0, y: 0, r: 0 }); return; }
+    const mag = jitter * 0.25;        // max ±25 native px at 100
+    const rot = jitter * 0.007;       // max ±0.7 deg at 100
+    setShake({
+      x: (Math.random() - 0.5) * 2 * mag,
+      y: (Math.random() - 0.5) * 2 * mag,
+      r: (Math.random() - 0.5) * 2 * rot,
+    });
+  }, [index, jitter]);
 
   // Reset index when cards change
   useEffect(() => {
@@ -76,7 +90,7 @@ export default function Player({
             height: nativeH,
             top: '50%',
             left: '50%',
-            transform: `translate(-50%, -50%) scale(${scale})`,
+            transform: `translate(-50%, -50%) translate(${shake.x}px, ${shake.y}px) rotate(${shake.r}deg) scale(${scale})`,
             transformOrigin: 'center center',
             // Thin outline makes the frame boundary visible in 9:16 letterbox
             boxShadow: '0 0 0 1px rgba(255,255,255,0.18)',

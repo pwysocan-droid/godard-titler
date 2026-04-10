@@ -21,6 +21,7 @@ export default function Page() {
   const [intensity, setIntensity] = useState(50);
   const [pacing, setPacing]   = useState(40);
   const [tracking, setTracking] = useState(60);   // 0–100 → 0–0.25em; default 60 = 0.15em
+  const [jitter, setJitter]     = useState(0);
   const [cards, setCards]     = useState<CardSpec[]>([]);
   const [cardIndex, setCardIndex] = useState(0);
   const [generating, setGenerating] = useState(false);
@@ -108,6 +109,7 @@ export default function Page() {
             font={font}
             caseMode={caseMode}
             trackingEm={trackingEm}
+            jitter={jitter}
             index={cardIndex}
             onIndexChange={handleIndexChange}
           />
@@ -186,6 +188,18 @@ export default function Page() {
               <div className="slider-labels">
                 <span className="label">Tight</span>
                 <span className="label">Wide</span>
+              </div>
+            </div>
+
+            <div className="slider-row">
+              <div className="slider-header">
+                <span className="label">Analog</span>
+                <span className="label accent-value">{jitter}</span>
+              </div>
+              <input type="range" min={0} max={100} value={jitter} onChange={(e) => setJitter(Number(e.target.value))} className="slider" />
+              <div className="slider-labels">
+                <span className="label">Off</span>
+                <span className="label">Heavy</span>
               </div>
             </div>
           </div>
